@@ -1,0 +1,89 @@
+<!-- We don't need a full layout in this file because this page will be parsed with Ajax. -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	
+	$(document).ready(function(){
+
+		$("#formSalvar").submit(function(e){
+
+			e.preventDefault();
+
+                //var data = {}
+                var json = ConvertFormToJSON("#formSalvar");
+                var Form = this;
+                alert(JSON.stringify(json));
+                alert(JSON.stringify($(Form).serialize()));
+                alert(JSON.stringify($(Form).serializeArray()));
+                alert(json);
+
+                //Save Form Data........
+                $.ajax({
+                    cache: false,
+                    url : 'http://192.168.0.104:8080/NewAuladaw/ws/cliente/novo',
+                    type: "POST",
+                    dataType : "json",
+                    data : json,
+                    context : Form,
+                    success : function(callback){
+                        //Where $(this) => context == FORM
+                        alert('Sucesso');
+                    },
+                    error : function(){
+                        alert('Erro');
+                    }
+                });
+
+		});	
+
+	});
+
+
+	function ConvertFormToJSON(form){
+            console.log('ConvertFormToJSON invoked!');
+            var array = jQuery(form).serializeArray();
+            var json = {};
+
+            jQuery.each(array, function() {
+                json[this.name] = this.value || '';
+            });
+
+            console.log('JSON: '+json);
+            return json;
+    }
+
+</script>
+<!-- Top Navbar-->
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="left">
+            <a href="#" class="back link">
+                <i class="icon icon-back"></i>
+                <span>Voltar</span>
+            </a>
+        </div>
+        <div class="center sliding">Salvar Cliente</div>
+        <div class="right">
+            <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+        </div>
+    </div>
+</div>
+
+
+<div class="pages">
+    <div data-page="formCadastro" class="page">
+        <div class="page-content">
+	      <div class="content-block"  >
+				          
+                    <form id="formSalvar">
+							<input type="text" name="nomecliente" placeholder="Nome Cliente" />
+							<input type="text" name="fonecliente" placeholder="Fone" />
+	              			<input type="text" name="emailcliente" placeholder="Email" />
+	              			<input type="text" name="fonecliente" placeholder="CPF/CNPJ" />
+	              			<button class="btn btn-info" type="submit" id="cadastrar">Cadastrar</button>
+              		</form>           
+            
+
+           </div>
+        </div>
+    </div>
+</div>

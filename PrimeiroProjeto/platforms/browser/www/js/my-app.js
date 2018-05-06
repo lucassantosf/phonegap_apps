@@ -29,7 +29,6 @@ var idcli;
 function buscarCli(id){
   idcli = id;
   mainView.router.loadPage('pagina2.html');
-
 }
 
 
@@ -49,11 +48,10 @@ $$(document).on('pageInit', function (e) {
         myApp.alert('About2');
     }
 
-
-    if (page.name==='pagina1'){        
+    if (page.name==='pagina1'){     
 
         
-        $$.getJSON("http://192.168.3.77:8080/Aula10/ws/cliente/listar/", function(data){
+        $$.getJSON("http://192.168.0.104:8080/NewAuladaw/ws/cliente/listar/", function(data){
             $$.each(data, function(index, value){
               var str2 = '<li>'+
              '<a href="javascript: buscarCli('+value.idcliente+')" class="item-link item-content" >'+
@@ -66,33 +64,38 @@ $$(document).on('pageInit', function (e) {
               '</li>';
               $$('#listcli').append(str2);   
             });
-
-
-        })
-
-
-        
+        })     
         
     }
 
-
     if (page.name==='pagina2'){        
 
-           $$.getJSON("http://192.168.3.77:8080/Aula10/ws/cliente/buscar/"+idcli, function(value){
+        $$.getJSON("http://192.168.0.104:8080/NewAuladaw/ws/cliente/buscar/"+idcli, function(value){
               var str1 = '<div class="card">'+
                             '<div class="card-header">'+value.nomecliente+'</div>'+
                             '<div class="card-content card-content-padding">'+value.cpfcnpjcliente+'<br>'+
                             value.emailcliente+'<br>'+
                             value.fonecliente+'</div>'+
-                            '<div class="card-footer">Card Footer</div>'+
+                            '<div class="card-footer"><a href="pagina4.html">Excluir</a></div>'+
                             '</div>';
-              $$('#detcli').append(str1);   
-     
-
+              $$('#detcli').append(str1);       
         })
-
-
         
+    }
+
+    if (page.name==='pagina3'){
+        
+
+        $$.postJSON('http://192.168.0.104:8080/NewAuladaw/ws/cliente/novo',{
+                cpfcnpjcliente: '54321',
+                emailcliente: 'cs@gmail.com',
+                fonecliente: '33333',
+                nomecliente: 'nnnTeste',
+                vendas: ['']
+              },function(value){
+                  alert('Sucesso');
+              })
+
     }
 
 })
