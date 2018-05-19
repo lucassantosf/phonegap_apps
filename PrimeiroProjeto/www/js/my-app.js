@@ -31,21 +31,20 @@ function buscarCli(id){
   mainView.router.loadPage('pagina2.html');
 }
 
-
-
-// Option 2. Using one 'pageInit' event handler for all pages:
 $$(document).on('pageInit', function (e) {
     // Get page data from event data
     var page = e.detail.page;
 
-    if (page.name === 'about') {
-        // Following code will be executed for page with data-page attribute equal to "about"
+    if (page.name === 'about') {        
         myApp.alert('Here comes About page');
     }
 
-     if (page.name === 'about2') {
-        // Following code will be executed for page with data-page attribute equal to "about"
+    if (page.name === 'about2') {        
         myApp.alert('About2');
+    }
+
+    if (page.name === 'empresa') {        
+        mainView.router.loadPage('empresa.html');        
     }
 
     if (page.name==='pagina1'){     
