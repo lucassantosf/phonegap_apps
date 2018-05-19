@@ -1,6 +1,6 @@
 // Initialize app
 var myApp = new Framework7();
-
+var ip = '192.168.0.114';
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
@@ -25,6 +25,27 @@ myApp.onPageInit('about', function (page) {
 
 })
 
+$$('#logarbtn').on('click', function(e){
+    
+    var email = $$('#email').val();
+    var senha = $$('#senha').val();
+
+    alert(email+senha);    
+
+    $$.getJSON("http://192.168.0.114:8080/NewAuladaw/ws/cliente/listar", function(data){
+            
+            
+        $$.each(data, function(index, value){
+            if(email == value.emailcliente && senha == value.senhacliente){
+                alert("Olá "+value.nomecliente+" Voce esta Logado");
+            }
+        });
+
+    })  
+
+});
+
+
 // Option 2. Using one 'pageInit' event handler for all pages:
 $$(document).on('pageInit', function (e) {
     // Get page data from event data
@@ -32,22 +53,10 @@ $$(document).on('pageInit', function (e) {
 
     if (page.name === 'about') {
         // Following code will be executed for page with data-page attribute equal to "about"
-        myApp.alert('Here comes About page');
-    }
-    
-    if (page.name==='pagina1'){
-    	 var str1 = '<li>'+
-         '<a href="#" class="item-link item-content" >'+
-           '<div class="item-inner">'+
-               '<i class="f7-icons">list</i>'+
-               '<div class="item-title">Nome</div>'+
-               '<div class="item-after">Email</div>'+
-           '</div>'+
-         '</a>'+
-      '</li>';
+        
 
-    	 $$('#listcli').append(str1);
-    	
+
+        myApp.alert('Here comes About page');
     }
 })
 
