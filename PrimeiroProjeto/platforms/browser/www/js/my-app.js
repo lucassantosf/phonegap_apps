@@ -31,6 +31,23 @@ function buscarCli(id){
   mainView.router.loadPage('pagina2.html');
 }
 
+
+
+$$('#logarbtn').on('click', function(e){
+  
+    var email = $$('#email').val();
+    var senha = $$('#senha').val();
+    $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/listar/", function(data){
+    
+      $$.each(data, function(index, value){
+          if(email == value.email && senha == value.senha){
+            alert("Login feito com sucesso");
+            mainView.router.loadPage('principal.html'); 
+          } 
+      });            
+    })     
+});
+
 $$(document).on('pageInit', function (e) {
     // Get page data from event data
     var page = e.detail.page;
@@ -47,21 +64,68 @@ $$(document).on('pageInit', function (e) {
         mainView.router.loadPage('empresa.html');        
     }
 
+    if (page.name === 'recuperar') {
+
+        $$('#recuperarbtn').on('click', function(e){
+          var email = $$('#email2').val();
+          var senha = $$('#senha2').val();
+          var strurl = "http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/novo";
+          var dados = {"email":email,"senha":senha};     
+          $$.ajax({
+                  type       : 'POST',
+                  url        : strurl,
+                  crossDomain: true,
+                  data       : JSON.stringify(dados),
+                  contentType: 'application/json',
+                  success    : function(response) {       
+                      alert('Cadastro realizado com sucesso');               
+                      mainView.router.loadPage('index.html');
+                  },
+                  error      : function() {
+                      alert('Não Salvou');                  
+                  }
+          });
+        
+    });        
+        
+
+    }
+
+    if (page.name === 'index') {        
+        
+        $$('#logarbtn').on('click', function(e){
+  
+            var email = $$('#email').val();
+            var senha = $$('#senha').val();
+            $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/listar/", function(data){
+            
+              $$.each(data, function(index, value){
+                  if(email == value.email && senha == value.senha){
+                    alert("Login feito com sucesso");
+                    mainView.router.loadPage('principal.html'); 
+                  }else{
+
+                  } 
+              });            
+            })     
+        });
+
+    }
+
     if (page.name==='pagina1'){     
 
-        
-        $$.getJSON("http://192.168.0.104:8080/NewAuladaw/ws/cliente/listar/", function(data){
+        $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/listar", function(data){
             $$.each(data, function(index, value){
               var str2 = '<li>'+
-             '<a href="javascript: buscarCli('+value.idcliente+')" class="item-link item-content" >'+
+             '<a href="javascript: buscarCli('+value.idstakeholder+')" class="item-link item-content" >'+
                '<div class="item-inner">'+
                        '<i class="f7-icons">list</i>'+
-                       '<div class="item-title">'+value.idcliente+'</div>'+
-                       '<div class="item-after">'+value.nomecliente+'</div>'+
+                       '<div class="item-title">'+value.idstakeholder+'</div>'+
+                       '<div class="item-after">'+value.nome+'</div>'+
                    '</div>'+
                  '</a>'+
               '</li>';
-              $$('#listcli').append(str2);   
+              $$('#listStake').append(str2);   
             });
         })     
         
@@ -69,12 +133,12 @@ $$(document).on('pageInit', function (e) {
 
     if (page.name==='pagina2'){        
 
-        $$.getJSON("http://192.168.0.104:8080/NewAuladaw/ws/cliente/buscar/"+idcli, function(value){
+        $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/buscar/"+idcli, function(value){
               var str1 = '<div class="card">'+
-                            '<div class="card-header">'+value.nomecliente+'</div>'+
-                            '<div class="card-content card-content-padding">'+value.cpfcnpjcliente+'<br>'+
-                            value.emailcliente+'<br>'+
-                            value.fonecliente+'</div>'+
+                            '<div class="card-header">Nome:'+value.nome+'</div>'+
+                            '<div class="card-content card-content-padding">Cpf/Cnpj:'+value.cpfcnpj+'<br>Email:'+
+                            value.email+'<br>'+
+                            '</div>'+
                             '<div class="card-footer"><a href="pagina4.html">Excluir</a></div>'+
                             '</div>';
               $$('#detcli').append(str1);       
@@ -83,17 +147,33 @@ $$(document).on('pageInit', function (e) {
     }
 
     if (page.name==='pagina3'){
-        
 
-        $$.postJSON('http://192.168.0.104:8080/NewAuladaw/ws/cliente/novo',{
-                cpfcnpjcliente: '54321',
-                emailcliente: 'cs@gmail.com',
-                fonecliente: '33333',
-                nomecliente: 'nnnTeste',
-                vendas: ['']
-              },function(value){
-                  alert('Sucesso');
-              })
+      $$('#salvarSta').on('click', function(e){
+        
+        var nome = $$('#nomesta').val();
+        var cpf = $$('#cpfsta').val();
+        var email = $$('#emailsta').val();        
+        alert(nome+cpf+email);
+
+        var address = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/novo';
+        var dados = {"cpfcnpj":cpf,"email":email,"nome":nome};
+
+        $$.ajax({
+            type       : 'POST',
+            url        : address,
+            crossDomain: true,
+            data       : JSON.stringify(dados),
+            contentType: 'application/json',
+            success    : function(response) {
+                alert('Salvou');
+                mainView.router.loadPage('principal.html');
+            },
+            error      : function() {
+                alert('Não Salvou');                  
+            }
+        });
+
+      });
 
     }
 

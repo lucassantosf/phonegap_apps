@@ -47,6 +47,7 @@
             </p>
         </div>
     </div>
+
     <!-- Views -->
     <div class="views">
         <!-- Your main view, should have "view-main" class -->
@@ -55,52 +56,45 @@
             <div class="navbar">
                 <div class="navbar-inner">
                     <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
-                    <div class="center sliding">Propostas e Ideias </div>
+                    <div class="left">
+                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+                    </div>
+                    <div class="center sliding">Propostas e Ideias</div>
                     <div class="right">
                         <!--
                           Right link contains only icon - additional "icon-only" class
                           Additional "open-panel" class tells app to open panel when we click on this link
-                        
-                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></i></a>-->
+                        -->                        
+                        <a href="#" class="back link">
+                            <i class="icon icon-back"></i>
+                            <span>Sair</span>
+                        </a>
                     </div>
                 </div>
             </div>
             <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
             <div class="pages navbar-through toolbar-through">
                 <!-- Page, "data-page" contains page name -->
-                <div data-page="index" class="page">
+                <div data-page="principal" class="page">
                     <!-- Scrollable page content -->
                     <div class="page-content">
                         <div class="content-block">
-                            <div style="margin: 0 auto;
-                                        width: 50%; /* Valor da Largura */" id="divlogin">
-                            <h1>Autenticação</h1>
-                            <input type="text" id="email" style="width: 100%" placeholder="Email" width="50">
-                                      
-                            <br><br>
-                            
-                            <input type="password" id="senha" style="width: 100%" placeholder="Senha">
-
-                            <br><br>
-                            <button id="logarbtn" style="width: 100%">Logar</button>
+                            <p>A ISO 1400 é, em termos gerais, uma família de normas que oferece orientações gerenciais para atividades que interferem no meio ambiente. O reflexo da utilização dessas normas, porém, vai muito além dos resultados unicamente ambientais. Incremento na qualidade produtiva, melhores relações com colaboradores, fornecedores e comunidades, maior controle da legislação aplicável e redução de custos operacionais</p>
+                            <!-- Link to another page -->  
+                            <a href="#"><h1>Tem alguma ideia? Compartilhe !</a><h1><br/>
                                                      
-                            <br><br>
-                            <a href="recuperar.html">Não tem conta? Cadastre-se</a>
-                            <br>
-                            
-                            </div>                     
-                                 
+                            <br>                          
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Bottom Toolbar-->
             <div class="toolbar">
-                <div class="toolbar-inner2">
+                <div class="toolbar-inner">
                     <!-- Toolbar links -->
-                    <a href="#" class="link"></a>
+                    <a href="index.html" class="link">Sair</a>
                     <a href="empresa.html" class="link">Sobre a Empresa</a>                
-                    
+
                 </div>
             </div>
         </div>
