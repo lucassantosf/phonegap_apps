@@ -26,42 +26,104 @@ myApp.onPageInit('about', function (page) {
 })
 
 var idcli;
-function buscarCli(id){
+function buscarSta(id){
   idcli = id;
   mainView.router.loadPage('pagina2.html');
 }
 
-
+function excluirSta(id){
+  
+    var idexcluir = idcli;
+    var delet = 'http://localhost:8080/NovoMeioAmbiente/ws/stakeholder/apagar/'+idexcluir;
+    alert(delet);
+    $$.ajax({
+        type       : 'DELETE',
+        url        : delet,
+        crossDomain: true,
+        contentType: 'application/json',
+        success    : function(response) {
+          alert('Stakeholder Excluido com sucesso');    
+          mainView.router.loadPage('pagina2.html');  
+      },
+      error      : function() {
+           alert('Não foi possível excluir');                  
+      }
+  });  
+}
 
 $$('#logarbtn').on('click', function(e){
   
     var email = $$('#email').val();
     var senha = $$('#senha').val();
-    $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/listar/", function(data){
-    
-      $$.each(data, function(index, value){
+    if(email == '' || senha == ''){
+      alert('Dados imcompletos');
+    }else{
+      $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/listar/", function(data){
+        $$.each(data, function(index, value){
           if(email == value.email && senha == value.senha){
             alert("Login feito com sucesso");
             mainView.router.loadPage('principal.html'); 
+          }else{
+            
           } 
-      });            
-    })     
+        });            
+      })
+    }   
 });
 
 $$(document).on('pageInit', function (e) {
     // Get page data from event data
-    var page = e.detail.page;
+    var page = e.detail.page;    
 
-    if (page.name === 'about') {        
-        myApp.alert('Here comes About page');
+    if (page.name === 'listaIdeias') {        
+        mainView.router.loadPage('listar_ideia.html'); 
+        $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/listar", function(data){
+            $$.each(data, function(index, value){
+              var str2 = '<li>'+
+             '<a href="javascript: buscarSta('+value.idideia+')" class="item-link item-content" >'+
+               '<div class="item-inner">'+
+                       '<i class="f7-icons">list</i>'+
+                       '<div class="item-title">Titulo:'+value.titulo+'</div>'+                       
+                   '</div>'+
+                 '</a>'+
+              '</li>';
+              $$('#listIdeia').append(str2);   
+            });
+        })
+             
     }
 
-    if (page.name === 'about2') {        
-        myApp.alert('About2');
-    }
+    if (page.name === 'formIdeia') {        
+        mainView.router.loadPage('formIdeia.html');  
+                
+        $$('#cadastrarIdeiabtn').on('click', function(e){
+          var autor = $$('#autor').val();
+          var titulo = $$('#titulo').val();
+          var descricao = $$('#descricao').val();
+          if(autor == '' || titulo == '' || descricao == ''){
+            alert('Preencha todas as informações!');
+            
+          }else{
+            var strurl = "http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/novo";
+            var dados = {"autor":autor,"descri":descricao,"titulo":titulo}; 
+            $$.ajax({
+                    type       : 'POST',
+                    url        : strurl,
+                    crossDomain: true,
+                    data       : JSON.stringify(dados),
+                    contentType: 'application/json',
+                    success    : function(response) {       
+                        alert('Compartilhado com sucesso!');               
+                        mainView.router.loadPage('principal.html');
+                    },
+                    error      : function() {
+                        alert('Não Salvou');                  
+                    }
+            });  
+          }
 
-    if (page.name === 'empresa') {        
-        mainView.router.loadPage('empresa.html');        
+        });
+        
     }
 
     if (page.name === 'recuperar') {
@@ -69,45 +131,53 @@ $$(document).on('pageInit', function (e) {
         $$('#recuperarbtn').on('click', function(e){
           var email = $$('#email2').val();
           var senha = $$('#senha2').val();
-          var strurl = "http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/novo";
-          var dados = {"email":email,"senha":senha};     
-          $$.ajax({
-                  type       : 'POST',
-                  url        : strurl,
-                  crossDomain: true,
-                  data       : JSON.stringify(dados),
-                  contentType: 'application/json',
-                  success    : function(response) {       
-                      alert('Cadastro realizado com sucesso');               
-                      mainView.router.loadPage('index.html');
-                  },
-                  error      : function() {
-                      alert('Não Salvou');                  
-                  }
-          });
+          
+          if(email == '' || senha == ''){
+            alert('Dados incompletos');
+          }else{
+            var strurl = "http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/novo";
+            var dados = {"email":email,"senha":senha};     
+            $$.ajax({
+                    type       : 'POST',
+                    url        : strurl,
+                    crossDomain: true,
+                    data       : JSON.stringify(dados),
+                    contentType: 'application/json',
+                    success    : function(response) {       
+                        alert('Cadastro realizado com sucesso');               
+                        mainView.router.loadPage('index.html');
+                    },
+                    error      : function() {
+                        alert('Não Salvou');                  
+                    }
+            });
+          }         
         
-    });        
-        
+        }); 
 
     }
 
     if (page.name === 'index') {        
         
         $$('#logarbtn').on('click', function(e){
-  
+
             var email = $$('#email').val();
             var senha = $$('#senha').val();
-            $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/listar/", function(data){
-            
-              $$.each(data, function(index, value){
-                  if(email == value.email && senha == value.senha){
-                    alert("Login feito com sucesso");
-                    mainView.router.loadPage('principal.html'); 
-                  }else{
+            if(email == '' || senha == ''){
+              alert('Dados imcompletos');
+            }else{
+              $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/usuario/listar/", function(data){
+                $$.each(data, function(index, value){
+                    if(email == value.email && senha == value.senha){
+                      alert("Login feito com sucesso");
+                      mainView.router.loadPage('principal.html'); 
+                    }else{
 
-                  } 
-              });            
-            })     
+                    } 
+                });            
+              })
+            }
+                 
         });
 
     }
@@ -117,7 +187,7 @@ $$(document).on('pageInit', function (e) {
         $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/listar", function(data){
             $$.each(data, function(index, value){
               var str2 = '<li>'+
-             '<a href="javascript: buscarCli('+value.idstakeholder+')" class="item-link item-content" >'+
+             '<a href="javascript: buscarSta('+value.idstakeholder+')" class="item-link item-content" >'+
                '<div class="item-inner">'+
                        '<i class="f7-icons">list</i>'+
                        '<div class="item-title">'+value.idstakeholder+'</div>'+
@@ -139,7 +209,7 @@ $$(document).on('pageInit', function (e) {
                             '<div class="card-content card-content-padding">Cpf/Cnpj:'+value.cpfcnpj+'<br>Email:'+
                             value.email+'<br>'+
                             '</div>'+
-                            '<div class="card-footer"><a href="pagina4.html">Excluir</a></div>'+
+                            '<div class="card-footer"><a href="javascript: excluirSta('+value.idstakeholder+')">Excluir</a></div>'+
                             '</div>';
               $$('#detcli').append(str1);       
         })
@@ -152,26 +222,30 @@ $$(document).on('pageInit', function (e) {
         
         var nome = $$('#nomesta').val();
         var cpf = $$('#cpfsta').val();
-        var email = $$('#emailsta').val();        
-        alert(nome+cpf+email);
+        var email = $$('#emailsta').val();      
+        
+        if(nome == '' || cpf == '' || email == ''){
+          alert('Preencher Informações Obrigatórias!');
+        }else{
+          var address = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/novo';
+          var dados = {"cpfcnpj":cpf,"email":email,"nome":nome};
+          $$.ajax({
+              type       : 'POST',
+              url        : address,
+              crossDomain: true,
+              data       : JSON.stringify(dados),
+              contentType: 'application/json',
+              success    : function(response) {
+                  alert('Stakeholder cadastrado com sucesso!');
+                  mainView.router.loadPage('principal.html');
+              },
+              error      : function() {
+                  alert('Não Salvou');                  
+              }
+          });
+        }
 
-        var address = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/novo';
-        var dados = {"cpfcnpj":cpf,"email":email,"nome":nome};
-
-        $$.ajax({
-            type       : 'POST',
-            url        : address,
-            crossDomain: true,
-            data       : JSON.stringify(dados),
-            contentType: 'application/json',
-            success    : function(response) {
-                alert('Salvou');
-                mainView.router.loadPage('principal.html');
-            },
-            error      : function() {
-                alert('Não Salvou');                  
-            }
-        });
+        
 
       });
 
