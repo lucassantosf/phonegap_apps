@@ -25,16 +25,25 @@ myApp.onPageInit('about', function (page) {
 
 })
 
-var idcli;
+var idsta;
 function buscarSta(id){
-  idcli = id;
+  idsta = id;
   mainView.router.loadPage('pagina2.html');
 }
 
-function excluirSta(id){
-  
-    var idexcluir = idcli;
-    var delet = 'http://localhost:8080/NovoMeioAmbiente/ws/stakeholder/apagar/'+idexcluir;
+function editarSta(id){
+  idsta = id;
+  mainView.router.loadPage('alterarStakeholder.html');
+  $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/buscar/"+idsta, function(value){      
+    document.getElementById("nomesta2").value = value.nome;
+    document.getElementById("cpfsta2").value = value.cpfcnpj;
+    document.getElementById("emailsta2").value = value.email;      
+  })
+}
+
+function excluirSta(id){  
+    var idexcluir = id;
+    var delet = 'http://localhost:8080/NovoMeioAmbiente/ws/stakeholder/apagar/'+idexcluir;    
     alert(delet);
     $$.ajax({
         type       : 'DELETE',
@@ -42,14 +51,51 @@ function excluirSta(id){
         crossDomain: true,
         contentType: 'application/json',
         success    : function(response) {
-          alert('Stakeholder Excluido com sucesso');    
+          alert('Stakeholder excluido com sucesso!');    
           mainView.router.loadPage('pagina2.html');  
       },
-      error      : function() {
+      error      : function(e) {
            alert('Não foi possível excluir');                  
       }
   });  
 }
+
+var idIdeia;
+function buscarIdeia(id){
+  idIdeia = id;
+  mainView.router.loadPage('pagina5.html');
+}
+
+function editarIdeia(id){  
+  idIdeia = id;
+  mainView.router.loadPage('alterarIdeia.html');
+  $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/buscar/"+idIdeia, function(value){
+    document.getElementById("autor2").value = value.autor;
+    document.getElementById("titulo2").value = value.titulo;
+    document.getElementById("descricao2").value = value.descri;
+  })
+}
+
+function excluirIdeia(id){  
+  var idexcluir = id;
+  var delet = 'http://localhost:8080/NovoMeioAmbiente/ws/ideia/apagar/'+idexcluir;    
+    alert(delet);
+    $$.ajax({
+        type       : 'DELETE',
+        url        : delet,
+        crossDomain: true,
+        contentType: 'application/json',
+        success    : function(response) {
+          alert('Ideia excluida com sucesso!');    
+          mainView.router.loadPage('pagina2.html');  
+      },
+      error      : function(e) {
+           alert('Não foi possível excluir');                  
+      }
+    });  
+}
+
+
 
 $$('#logarbtn').on('click', function(e){
   
@@ -80,7 +126,7 @@ $$(document).on('pageInit', function (e) {
         $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/listar", function(data){
             $$.each(data, function(index, value){
               var str2 = '<li>'+
-             '<a href="javascript: buscarSta('+value.idideia+')" class="item-link item-content" >'+
+             '<a href="javascript: buscarIdeia('+value.idideia+')" class="item-link item-content" >'+
                '<div class="item-inner">'+
                        '<i class="f7-icons">list</i>'+
                        '<div class="item-title">Titulo:'+value.titulo+'</div>'+                       
@@ -190,8 +236,8 @@ $$(document).on('pageInit', function (e) {
              '<a href="javascript: buscarSta('+value.idstakeholder+')" class="item-link item-content" >'+
                '<div class="item-inner">'+
                        '<i class="f7-icons">list</i>'+
-                       '<div class="item-title">'+value.idstakeholder+'</div>'+
-                       '<div class="item-after">'+value.nome+'</div>'+
+                       '<div>'+value.idstakeholder+'-</div>'+
+                       '<div>'+value.nome+'</div>'+
                    '</div>'+
                  '</a>'+
               '</li>';
@@ -203,13 +249,14 @@ $$(document).on('pageInit', function (e) {
 
     if (page.name==='pagina2'){        
 
-        $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/buscar/"+idcli, function(value){
+        $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/buscar/"+idsta, function(value){
               var str1 = '<div class="card">'+
                             '<div class="card-header">Nome:'+value.nome+'</div>'+
-                            '<div class="card-content card-content-padding">Cpf/Cnpj:'+value.cpfcnpj+'<br>Email:'+
+                            '<div class="card-footer">Cpf/Cnpj:'+value.cpfcnpj+'<br>Email:'+
                             value.email+'<br>'+
                             '</div>'+
                             '<div class="card-footer"><a href="javascript: excluirSta('+value.idstakeholder+')">Excluir</a></div>'+
+                            '<div class="card-footer"><a href="javascript: editarSta('+value.idstakeholder+')">Editar</a></div>'+
                             '</div>';
               $$('#detcli').append(str1);       
         })
@@ -243,12 +290,89 @@ $$(document).on('pageInit', function (e) {
                   alert('Não Salvou');                  
               }
           });
-        }
-
-        
+        }      
 
       });
 
+    }
+
+    if (page.name==='pagina5'){
+
+      $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/buscar/"+idIdeia, function(value){              
+              var strIdea = '<div class="card">'+
+                            '<div class="card-header">Titulo:'+value.titulo+'</div>'+
+                            '<div class="card-content card-content-padding"><br>Autor<br><hr>'+value.autor+'<br><hr>Descricao<hr>'+
+                            value.descri+'<br>'+
+                            '</div>'+
+                            '<div class="card-footer"><a href="javascript: excluirIdeia('+value.idideia+')">Excluir</a></div>'+
+                            '<div class="card-footer"><a href="javascript: editarIdeia('+value.idideia+')">Editar</a></div>'+
+                            '</div>';
+              $$('#detIdeia').append(strIdea);       
+      })      
+
+    }
+
+    if (page.name==='alterarSta'){
+      
+      $$('#editarSta').on('click', function(e){
+        
+        var nome = $$('#nomesta2').val();
+        var cpf = $$('#cpfsta2').val();
+        var email = $$('#emailsta2').val();      
+        
+        if(nome == '' || cpf == '' || email == ''){
+          alert('Preencher Informações Obrigatórias!');
+        }else{
+          var address = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/editar';
+          var dados = {"cpfcnpj":cpf,"email":email,"idstakeholder":idsta,"nome":nome};
+          $$.ajax({
+              type       : 'POST',
+              url        : address,
+              crossDomain: true,
+              data       : JSON.stringify(dados),
+              contentType: 'application/json',
+              success    : function(response) {
+                  alert('Stakeholder editado com sucesso!');
+                  mainView.router.loadPage('listar_stak.html');
+              },
+              error      : function() {
+                  alert('Não editou stakeholder!');                  
+              }
+          });
+        }
+
+      });
+
+    }
+
+    if(page.name==='alterarIdeia'){
+    
+      $$('#editarIdeia').on('click', function(e){
+        var autor = $$('#autor2').val();
+        var titulo = $$('#titulo2').val();
+        var descri = $$('#descricao2').val();      
+        
+        if(autor == '' || titulo == '' || descri == ''){
+          alert('Preencher Informações Obrigatórias!');
+        }else{
+          var address = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/editar';
+          var dados = {"autor":autor,"descri":descri,"idideia":idIdeia,"titulo":titulo};
+          $$.ajax({
+              type       : 'POST',
+              url        : address,
+              crossDomain: true,
+              data       : JSON.stringify(dados),
+              contentType: 'application/json',
+              success    : function(response) {
+                  alert('Ideia editada com sucesso!');
+                  mainView.router.loadPage('listar_ideia.html');
+              },
+              error      : function() {
+                  alert('Não editou ideia!');                  
+              }
+          });
+        }
+      });
     }
 
 })
