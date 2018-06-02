@@ -1,7 +1,6 @@
 // Initialize app
 var myApp = new Framework7();
 
-
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
 
@@ -15,7 +14,6 @@ var mainView = myApp.addView('.view-main', {
 $$(document).on('deviceready', function() {
     console.log("Device is ready!");
 });
-
 
 // Now we need to run the code that will be executed only for About page.
 
@@ -43,8 +41,7 @@ function editarSta(id){
 
 function excluirSta(id){  
     var idexcluir = id;
-    var delet = 'http://localhost:8080/NovoMeioAmbiente/ws/stakeholder/apagar/'+idexcluir;    
-    alert(delet);
+    var delet = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/apagar/'+idexcluir;
     $$.ajax({
         type       : 'DELETE',
         url        : delet,
@@ -52,12 +49,12 @@ function excluirSta(id){
         contentType: 'application/json',
         success    : function(response) {
           alert('Stakeholder excluido com sucesso!');    
-          mainView.router.loadPage('pagina2.html');  
+          mainView.router.loadPage('listar_stak.html');  
       },
       error      : function(e) {
-           alert('Não foi possível excluir');                  
-      }
-  });  
+           alert('Não foi possível excluir o stakeholder!');                  
+      }    
+    }); 
 }
 
 var idIdeia;
@@ -77,9 +74,8 @@ function editarIdeia(id){
 }
 
 function excluirIdeia(id){  
-  var idexcluir = id;
-  var delet = 'http://localhost:8080/NovoMeioAmbiente/ws/ideia/apagar/'+idexcluir;    
-    alert(delet);
+    var idexcluir = id;
+    var delet = 'http://192.168.0.104:8080/NovoMeioAmbiente/ws/ideia/apagar/'+idexcluir;
     $$.ajax({
         type       : 'DELETE',
         url        : delet,
@@ -87,15 +83,13 @@ function excluirIdeia(id){
         contentType: 'application/json',
         success    : function(response) {
           alert('Ideia excluida com sucesso!');    
-          mainView.router.loadPage('pagina2.html');  
+          mainView.router.loadPage('listar_ideia.html');  
       },
       error      : function(e) {
-           alert('Não foi possível excluir');                  
-      }
+           alert('Não foi possível excluir sua ideia!');                  
+      }    
     });  
 }
-
-
 
 $$('#logarbtn').on('click', function(e){
   
@@ -135,8 +129,7 @@ $$(document).on('pageInit', function (e) {
               '</li>';
               $$('#listIdeia').append(str2);   
             });
-        })
-             
+        })             
     }
 
     if (page.name === 'formIdeia') {        
@@ -173,7 +166,7 @@ $$(document).on('pageInit', function (e) {
     }
 
     if (page.name === 'recuperar') {
-
+        mainView.router.loadPage('recuperar.html'); 
         $$('#recuperarbtn').on('click', function(e){
           var email = $$('#email2').val();
           var senha = $$('#senha2').val();
@@ -204,7 +197,7 @@ $$(document).on('pageInit', function (e) {
     }
 
     if (page.name === 'index') {        
-        
+        mainView.router.loadPage('index.html'); 
         $$('#logarbtn').on('click', function(e){
 
             var email = $$('#email').val();
@@ -228,15 +221,18 @@ $$(document).on('pageInit', function (e) {
 
     }
 
+    if(page.name==='principal'){
+      mainView.router.loadPage('principal.html');
+    }
+    
     if (page.name==='pagina1'){     
-
+        mainView.router.loadPage('formIdeia.html'); 
         $$.getJSON("http://192.168.0.104:8080/NovoMeioAmbiente/ws/stakeholder/listar", function(data){
             $$.each(data, function(index, value){
               var str2 = '<li>'+
              '<a href="javascript: buscarSta('+value.idstakeholder+')" class="item-link item-content" >'+
                '<div class="item-inner">'+
-                       '<i class="f7-icons">list</i>'+
-                       '<div>'+value.idstakeholder+'-</div>'+
+                       '<i class="f7-icons">list</i>'+                       
                        '<div>'+value.nome+'</div>'+
                    '</div>'+
                  '</a>'+
@@ -374,7 +370,6 @@ $$(document).on('pageInit', function (e) {
         }
       });
     }
-
 })
 
 // Option 2. Using live 'pageInit' event handlers for each page
